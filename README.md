@@ -4,6 +4,10 @@ This project is used to compile a GDExtension, and try to use xmake to manage th
 
 It is mainly for learning purpose.
 
+## Install xmake
+
+Install xmake from [here](https://xmake.io/#/zh-cn/guide/installation).
+
 ## How to use
 
 First modify the *xmake.lua* to change the project name, and other configurations as needed.
@@ -28,18 +32,16 @@ After change the configurations, you can run the following commands to build, ru
 
 ```sh
 
-# 1. install xmake first
-
-# 2. build the project
+# 1. build the project
 xmake build
 
-# 3. run the demo
+# 2. run the demo
 xmake run
 
-# 4. export the project
+# 3. export the project
 xmake pack
 
-# 5. clean the build and publish
+# 4. clean the build and publish
 xmake clean
 
 
