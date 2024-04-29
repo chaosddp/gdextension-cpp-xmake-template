@@ -37,6 +37,9 @@ add_repositories("my-repo repo")
 -- use latest 4.x version
 add_requires("godot4")
 
+-- NOTE:
+-- xmake cannot accept the global variables in on_xxx functions, so we use a wrapper function to bind it
+
 -- export specified godot project, with the export execution name
 -- args:
 --  target_platform: the target platform, like "Windows Desktop"
@@ -45,9 +48,24 @@ task("export")
     on_run((function(godot_project_folder, publish_folder) 
         return function(target_platform)
             local name = godot_project_folder
-
-            if is_plat() == "windows" then
+            
+            -- different platform may have different execute name
+            -- xmake supported platforms:
+            -- windows
+            -- cross
+            -- linux
+            -- macosx
+            -- android
+            -- iphoneos
+            -- watchos
+            if is_plat("windows") then
                 name = name .. ".exe"
+            end
+
+            local export_mode = "export-debug"
+
+            if is_mode("release") then
+                export_mode = "export-release"
             end
 
             if not os.isdir(publish_folder) then
@@ -58,19 +76,22 @@ task("export")
 
             local export_path = path.absolute(path.join(publish_folder, name))
 
-            os.run("godot %s --headless --export-debug %s %s", godot_project_file, target_platform, export_path)
+            os.run("godot %s --headless --%s %s %s", godot_project_file, export_mode, target_platform, export_path)
         end
     
     end)(GODOT_PROJECT_FOLDER, PUBLISH_FOLDER))
 task_end()
 
+-- clean the publish folder and build folder
 task("clean-publish")
     on_run((function(godot_project_folder, publish_folder)
         return function ()
+            -- remove publish folder
             if os.isdir(publish_folder) then
                 os.tryrm(publish_folder)
             end
 
+            -- remove build target folder
             local bin_dir = path.join(godot_project_folder, "bin")
             if os.isdir(bin_dir) then
                 os.tryrm(path.join(bin_dir, "$(os)"))
@@ -112,8 +133,6 @@ target(PROJECT_NAME)
     -- before_clean(function (target)  end)
     -- after_clean(function (target)  end)
 
-    -- NOTE:
-    -- xmake cannot accept the global variables, so we use a wrapper function to provide it
     on_run(
         (function(godot_project_folder)
             return function(target)
@@ -124,12 +143,6 @@ target(PROJECT_NAME)
 
     on_package(function(target)
         import("core.base.task")
-
-        -- TODO: support other platform
-        -- TODO: support --export-release on release
-        if  not os.isdir("publish") then
-          os.mkdir("publish")
-        end 
 
         target_platform = "\"Windows Desktop\""
 
@@ -144,5 +157,5 @@ target(PROJECT_NAME)
 
     after_clean(function (target) 
         import("core.base.task")
-        task.run("clean-publish", {})
+        task.run("clean-publish")
     end)
