@@ -101,6 +101,26 @@ task("clean-publish")
 task_end()
 
 
+-- tasks that exposed to cli
+
+-- generate godot class or extension entrypoint
+-- args:
+--   name: the new class name
+--   basename: the base class name to inherit (must under godot_cpp/classes)
+--   dir: the directory to save the class (must under src)
+task("gen-class")
+    on_run(function (name, basename, dir)
+        -- TODO: generate the class here
+    end)
+task_end() 
+
+task("gen-entry")
+    on_run(function () 
+        -- TODO: generate the entrypoint here (register_types.h/cpp)
+        local project_name = PROJECT_NAME
+    end)
+task_end()
+
 -- what we want to export
 target(PROJECT_NAME)
     set_kind("shared")
