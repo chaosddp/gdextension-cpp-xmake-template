@@ -1,4 +1,4 @@
-# godotcpp4-xmake-template
+
 
 This project is used to compile a GDExtension (godot engine cpp extension), and try to use xmake to manage the project.
 
