@@ -11,19 +11,14 @@ VERSION = "0.0.1"
 GODOT_PROJECT_FOLDER = "demo"
 PUBLISH_FOLDER = "publish"
 
--- os.setenv("PROJECT_NAME", PROJECT_NAME)
--- os.setenv("VERSION", VERSION)
--- os.setenv("GODOT_PROJECT_FOLDER", GODOT_PROJECT_FOLDER)
-
 -- project name
 set_project(PROJECT_NAME)
 
 -- project version
 set_version(VERSION)
 
--- set_config("buildir", GODOT_PROJECT_FOLDER .. "/bin/")
-
 -- min version of xmake we need to run
+-- NOTE: this is the version i used to develop this template, may not 100% correct
 set_xmakever("2.9.0")
 
 add_rules("mode.debug", "mode.release")
@@ -31,10 +26,10 @@ add_rules("mode.debug", "mode.release")
 -- c++17 is required for godot 4.x, we use c++20 here
 set_languages("cxx20")
 
--- we use a private repo here
+-- we use a private repo here to maintain the godot4 package
 add_repositories("my-repo repo")
 
--- use latest 4.x version
+-- use latest 4.x version by default
 add_requires("godot4")
 
 -- NOTE:
@@ -104,7 +99,7 @@ task_end()
 -- tasks that exposed to cli
 -- NOTE: for complex tasks, we can use a seprate file to define it
 
--- generate godot class or extension entrypoint
+-- generate a class that inherit from godot class
 -- args:
 --   name: the new class name
 --   basename: the base class name to inherit (must under godot_cpp/classes)
@@ -113,7 +108,7 @@ task_end()
 
 task("ext-class")
     on_run(function ()
-        -- more on: https://xmake.io/#/zh-cn/manual/plugin_task
+        -- more on: https://xmake.io/#/manual/plugin_task
         -- we need this module to load options from menu
         import "core.base.option"
 
@@ -124,7 +119,6 @@ task("ext-class")
 
         -- we calculate these here, in case there is any special case to handle
         local header_guard = string.upper(name) .. "_H"
-        local baseclass_header_name = string.lower(base)
 
         import("class_tpl", {rootdir="templates", alias="class_render"})
 
@@ -161,7 +155,7 @@ task("ext-class")
 
             -- kv options
             -- (short, long), (kv, default_value), description, [values])
-            {"ns", "namespace",    "kv", "godot",  "Set the namespace of the new class"},
+            {"s", "namespace",    "kv", "godot",  "Set the namespace of the new class"},
             {"d", "dir",          "kv", nil,      "Set the directory to save the class"},
 
             {},
@@ -173,20 +167,14 @@ task("ext-class")
     }
 task_end() 
 
-task("gen-entry")
-    on_run(function () 
-        -- TODO: generate the entrypoint here (register_types.h/cpp)
-        local project_name = PROJECT_NAME
-    end)
-task_end()
-
--- what we want to export
+-- more on https://xmake.io/#/manual/project_target
 target(PROJECT_NAME)
     set_kind("shared")
 
     add_packages("godot4")
 
-    add_files("src/*.cpp")
+    -- more on https://xmake.io/#/manual/project_target?id=targetadd_files
+    add_files("src/*.cpp", "src/**/*.cpp")
 
     -- change the output name
     set_basename(PROJECT_NAME .. "_$(mode)_$(arch)")

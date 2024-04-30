@@ -44,5 +44,8 @@ xmake pack
 # 4. clean the build and publish
 xmake clean
 
+# 5. generate a class that inherits from godot class, like Sprite2D
+# by default the generated files will save under "src" folder, you can change it by -d folder/under/src
+xmake ext-class -n MySprite2D -b Sprite2D -s myexample1 -d sample
 
 ```
