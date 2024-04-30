@@ -38,8 +38,8 @@ xmake build
 # 2. run the demo
 xmake run
 
-# 3. export the project
-xmake pack
+# 3. export the project, the executable will be under "publish" folder by default
+xmake p
 
 # 4. clean the build and publish
 xmake clean
