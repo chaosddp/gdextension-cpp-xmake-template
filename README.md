@@ -6,7 +6,7 @@ It is mainly for learning purpose.
 
 ## Install xmake
 
-Install xmake from [here](https://xmake.io/#/zh-cn/guide/installation).
+Install xmake from [here](https://xmake.io/#/guide/installation).
 
 ## How to use
 
