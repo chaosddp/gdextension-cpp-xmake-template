@@ -39,7 +39,7 @@ set_languages("cxx20")
 add_repositories("my-repo repo")
 
 -- use latest 4.x version by default
-add_requires("godot4")
+add_requires("godotcpp4")
 
 
 ------- custom tasks -------
@@ -187,7 +187,7 @@ task_end()
 target(PROJECT_NAME)
     set_kind("shared")
 
-    add_packages("godot4")
+    add_packages("godotcpp4")
 
     -- more on https://xmake.io/#/manual/project_target?id=targetadd_files
     add_files("src/*.cpp")
