@@ -174,7 +174,7 @@ target(PROJECT_NAME)
     add_packages("godot4")
 
     -- more on https://xmake.io/#/manual/project_target?id=targetadd_files
-    add_files("src/*.cpp", "src/**/*.cpp")
+    add_files("src/*.cpp")
 
     -- change the output name
     set_basename(PROJECT_NAME .. "_$(mode)_$(arch)")
