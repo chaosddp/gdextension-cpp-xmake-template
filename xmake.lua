@@ -102,16 +102,75 @@ task_end()
 
 
 -- tasks that exposed to cli
+-- NOTE: for complex tasks, we can use a seprate file to define it
 
 -- generate godot class or extension entrypoint
 -- args:
 --   name: the new class name
 --   basename: the base class name to inherit (must under godot_cpp/classes)
 --   dir: the directory to save the class (must under src)
-task("gen-class")
-    on_run(function (name, basename, dir)
-        -- TODO: generate the class here
+--   namespace: the namespace of the new class
+
+task("ext-class")
+    on_run(function ()
+        -- more on: https://xmake.io/#/zh-cn/manual/plugin_task
+        -- we need this module to load options from menu
+        import "core.base.option"
+
+        local namespace = option.get("namespace")
+        local name = option.get("name")
+        local base = option.get("base")
+        local dir = option.get("dir")
+
+        -- we calculate these here, in case there is any special case to handle
+        local header_guard = string.upper(name) .. "_H"
+        local baseclass_header_name = string.lower(base)
+
+        import("class_tpl", {rootdir="templates", alias="class_render"})
+
+        -- header and impl text
+        local header_text = class_render.render_header(header_guard, namespace, name, base)
+        local impl_text = class_render.render_impl(namespace, name)
+
+        -- save
+        local output_dir = "src"
+
+        if dir ~= nil then
+            output_dir = path.join("src", dir)
+        end
+
+        if not os.isdir(output_dir) then
+            os.mkdir(output_dir)
+        end
+
+        local header_file = path.join(output_dir, string.lower(name) .. ".h")
+        local impl_file = path.join(output_dir, string.lower(name) .. ".cpp")
+
+        io.writefile(header_file, header_text)
+        io.writefile(impl_file, impl_text)
+
     end)
+
+    -- options 
+    set_menu {
+        usage = "xmake ext-class [options]",
+
+        description = "Generate godot class that inherits from a base class under godot_cpp/classes",
+
+        options = {
+
+            -- kv options
+            -- (short, long), (kv, default_value), description, [values])
+            {"ns", "namespace",    "kv", "godot",  "Set the namespace of the new class"},
+            {"d", "dir",          "kv", nil,      "Set the directory to save the class"},
+
+            {},
+
+            -- single value options
+            {"n", "name",         "v", nil,       "Set the new class name"},
+            {"b", "base",   "v", nil,             "Set the base class name to inherit"},
+        }
+    }
 task_end() 
 
 task("gen-entry")
