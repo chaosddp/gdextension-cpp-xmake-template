@@ -186,6 +186,7 @@ task_end()
 -- more on https://xmake.io/#/manual/project_target
 target(PROJECT_NAME)
     set_kind("shared")
+    set_default(true)
 
     add_packages("godotcpp4")
 
