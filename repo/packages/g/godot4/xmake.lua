@@ -33,6 +33,7 @@ package("godot4")
 
     on_install("linux", "windows|x64", "windows|x86", "macosx", "iphoneos", "android", function(package)
         if package:is_plat("windows") then
+            -- TODO: need a better way to compare the version
             if package:version() < "4.1.0" then 
                 io.replace("tools/targets.py", "/MD", "/" .. package:config("vs_runtime"), {plain = true})
             else
