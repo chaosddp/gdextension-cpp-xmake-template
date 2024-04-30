@@ -3,13 +3,22 @@
 -- 2. switch optimization level
 -- 3. refine the run command, as it currently run the project by default, maybe start a demo scene or a specified scene?
 
+------- basic custom config part -------
+
 -- project name
 PROJECT_NAME = "gdexample"
+
 -- project version
 VERSION = "0.0.1"
+
 -- godot project folder, this will be used as export name, so be careful to make sure it is a valid name
 GODOT_PROJECT_FOLDER = "demo"
+
+-- publish folder, the exported files will be put here
 PUBLISH_FOLDER = "publish"
+
+
+------- project settings -------
 
 -- project name
 set_project(PROJECT_NAME)
@@ -31,6 +40,10 @@ add_repositories("my-repo repo")
 
 -- use latest 4.x version by default
 add_requires("godot4")
+
+
+------- custom tasks -------
+
 
 -- NOTE:
 -- xmake cannot accept the global variables in on_xxx functions, so we use a wrapper function to bind it
@@ -162,10 +175,13 @@ task("ext-class")
 
             -- single value options
             {"n", "name",         "v", nil,       "Set the new class name"},
-            {"b", "base",   "v", nil,             "Set the base class name to inherit"},
+            {"b", "base",         "v", nil,       "Set the base class name to inherit"},
         }
     }
 task_end() 
+
+
+------- output settings -------
 
 -- more on https://xmake.io/#/manual/project_target
 target(PROJECT_NAME)
