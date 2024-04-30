@@ -49,3 +49,5 @@ xmake clean
 xmake ext-class -n MySprite2D -b Sprite2D -s myexample1 -d sample
 
 ```
+
+For better support in vscode, you can use command "Xmake: UpdateIntellisense" to generate *compile_commands.json*, then update "compileCommands" field in *c_cpp_properties.json* to point to the file.
