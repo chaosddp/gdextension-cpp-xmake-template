@@ -32,9 +32,10 @@ package("godotcpp4")
     end)
 
     on_install("linux", "windows|x64", "windows|x86", "macosx", "iphoneos", "android", function(package)
+        import("core.base.semver")
+
         if package:is_plat("windows") then
-            -- TODO: need a better way to compare the version
-            if package:version() < "4.1.0" then 
+            if semver.lt(package:version(), "4.1.0") then 
                 io.replace("tools/targets.py", "/MD", "/" .. package:config("vs_runtime"), {plain = true})
             else
                 io.replace("tools/common_compiler_flags.py", "/MD", "/" .. package:config("vs_runtime"), {plain = true})
